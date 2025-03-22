@@ -1,0 +1,775 @@
+views:
+  - title: Main
+    layout:
+      type: custom:grid-layout
+      columns: 24
+      gap: 8px
+    cards: []
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            icon: mdi:air-filter
+            heading: Air Quality Outdoors
+            heading_style: title
+            badges:
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.home_air_quality_today
+                color: primary
+          - square: false
+            type: grid
+            cards:
+              - square: false
+                type: grid
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.home_tree_pollen_today
+                    name: Tree
+                    fill_container: false
+                    icon_color: red
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.home_mold_pollen_today
+                    fill_container: false
+                    name: Mold
+                    icon_color: amber
+                columns: 2
+              - square: false
+                type: grid
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.home_grass_pollen_today
+                    fill_container: false
+                    name: Grass
+                    icon_color: light-green
+                  - type: custom:mushroom-entity-card
+                    fill_container: false
+                    entity: sensor.home_ragweed_pollen_today
+                    name: Ragweed
+                    icon_color: brown
+                columns: 2
+            columns: 2
+            grid_options:
+              columns: full
+              rows: auto
+          - type: iframe
+            url: >-
+              https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=°F&metricWind=mph&zoom=5&overlay=temp&product=ecmwf&level=surface&lat=33.285&lon=-86.221&detailLat=34.196&detailLon=-84.09500000000003&marker=true&message=true
+            aspect_ratio: 100%
+            grid_options:
+              columns: full
+              rows: 6
+          - type: custom:weather-radar-card
+            data_source: RainViewer-NEXRAD
+            map_style: Dark
+            static_map: true
+            show_marker: true
+            show_scale: true
+            show_zoom: true
+            show_playback: true
+            grid_options:
+              rows: 8
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mini-graph-card
+                name: (24 hours)
+                entities:
+                  - entity: sensor.weather_station_precipitation
+                    name: Precip. Rate
+                    color: green
+                    show_state: true
+                    show_graph: true
+                  - entity: sensor.weather_station_lightning_count
+                    name: Lightning Strikes
+                    color: yellow
+                    show_state: true
+                    show_graph: true
+                    y_axis: secondary
+                align_state: center
+                hours_to_show: 24
+                points_per_hour: 2
+                line_width: 2
+                show:
+                  name: false
+                  icon: false
+                  state: true
+                  graph: true
+                  labels: true
+                  labels_secondary: true
+                decimals: 2
+              - square: false
+                type: grid
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weather_station_precipitation_intensity
+                    name: Rain Rate /hr
+                    fill_container: true
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weather_station_lightning_count
+                    fill_container: true
+                    name: Count /hr
+                    icon_color: yellow
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.weather_station_lightning_average_distance
+                    fill_container: true
+                    name: Distance
+                    icon_color: deep-orange
+            columns: 1
+          - square: false
+            type: grid
+            cards:
+              - type: custom:bar-card
+                entities:
+                  - entity: sensor.weather_station_battery_voltage
+                    icon: mdi:battery
+                    positions:
+                      icon: outside
+                      indicator: 'on'
+                      minmax: 'on'
+                      name: 'on'
+                      value: 'on'
+                    min: 2.3
+                    max: 2.76
+                    height: 10
+                severity:
+                  - color: rgb(76,175,80)
+                    from: 2.59
+                    to: 2.76
+                  - color: rgb(255,152,0)
+                    from: 2.5
+                    to: 2.59
+                  - color: rgb(244,67,54)
+                    from: 2.3
+                    to: 2.5
+                card_mod:
+                  style: >
+                    {% set entity = { 
+                      "state": states('sensor.weather_station_battery_voltage') | float(9999999999),
+                      "name": "Tempest Battery",
+                      "unit": " V"
+                      }
+                    %} {% set severity = { 
+                      "green": 2.6,
+                      "orange": 2.5,
+                      "red": 2.3
+                      }
+                    %} {% set colors = { 
+                      "green": "76,175,80",
+                      "orange": "255,152,0",
+                      "red": "244,67,54"
+                      }
+                    %}
+
+                    ha-card .card-content {
+                      padding: 12px!important;
+                      cursor: pointer;
+                    }
+
+                    ha-card {
+                      transition-duration: 0.05s;
+                    }
+
+                    ha-card:hover {
+                      {% if entity.state == 9999999999 %}
+                        background-color: rgba(200,200,200, 0.02);
+                      {% elif entity.state < severity.orange %}
+                        background-color: rgba({{colors.green}}, 0.02);
+                      {% elif entity.state < severity.red %}
+                        background-color: rgba({{colors.orange}}, 0.02);
+                      {%- else -%}
+                        background-color: rgba({{colors.red}}, 0.02);
+                      {%- endif %}
+                    }
+
+                    bar-card-background {
+                      margin-left: 13px !important;
+                    }
+
+                    bar-card-backgroundbar, bar-card-currentbar,
+                    bar-card-contentbar,  bar-card-targetbar {
+                      border-radius: 8px;
+                    }
+
+                    bar-card-currentbar, bar-card-backgroundbar,
+                    bar-card-contentbar, bar-card-targetbar,
+                    bar-card-animationbar {
+                      {% if entity.state == 9999999999 %}
+                        left: 1.5em !important;
+                        width: calc(100% - 1.5em);
+                      {% else %}
+                        {% set state_width = 1 + (entity.state|string|count + entity.unit|count) * 0.4 %}
+                        left: {{state_width}}em !important;
+                        width: calc(100% - {{state_width}}em);
+                      {%- endif %}
+                    } 
+
+                    bar-card-markerbar {
+                      display: none;
+                    } 
+
+                    bar-card-background::before {
+                      content: "{{ entity.name }}";
+                      display: flex;
+                      font-family: Roboto, sans-serif;
+                      font-size: 14px;
+                      font-weight: 500;
+                      height: 20px;
+                      letter-spacing: 0.1px;
+                      line-height: 20px;
+                      margin-bottom: 6px;
+                    }
+
+                    bar-card-background::after {
+                      {% if entity.state == 9999999999 %}
+                        content: "N/A";
+                      {%- else %}
+                        content: "{{ entity.state }}{{ entity.unit }}";
+                      {%- endif %}
+                      font-family: Roboto, Noto, sans-serif;
+                      font-size: 12px;
+                      font-weight: 400;
+                      height: 16px;
+                      letter-spacing: 0.4px;
+                      line-height: 16px;
+                      display: inline-block;
+                      position: absolute;
+                      margin-top: -4px;
+                      width: fit-content;
+                    }
+
+                    bar-card-iconbar {
+                      {% if entity.state == 9999999999 %}
+                        color: rgba(200,200,200, 1);
+                        background-color: rgba(200,200,200, 0.2);
+                      {% elif entity.state < severity.orange %}
+                        color: rgba({{colors.green}}, 1);
+                        background-color: rgba({{colors.green}}, 0.2);
+                      {% elif entity.state < severity.red %}
+                        color: rgba({{colors.orange}}, 1);
+                        background-color: rgba({{colors.orange}}, 0.2);
+                      {%- else -%}
+                        color: rgba({{colors.red}}, 1);
+                        background-color: rgba({{colors.red}}, 0.2);
+                      {%- endif %}
+                      border-radius: 50%;
+                    }
+                      font-family: Roboto, Noto, sans-serif;
+                      font-size: 12px;
+                      font-weight: 400;
+                      height: 16px;
+                      letter-spacing: 0.4px;
+                      line-height: 16px;
+                      display: inline-block;
+                      position: absolute;
+                      margin-top: -4px;
+                      width: fit-content;
+                    }
+
+                    bar-card-iconbar {
+                      {% if entity.state == 9999999999 %}
+                        color: rgba(200,200,200, 1);
+                        background-color: rgba(200,200,200, 0.2);
+                      {% elif entity.state < severity.orange %}
+                        color: rgba({{colors.green}}, 1);
+                        background-color: rgba({{colors.green}}, 0.2);
+                      {% elif entity.state < severity.red %}
+                        color: rgba({{colors.orange}}, 1);
+                        background-color: rgba({{colors.orange}}, 0.2);
+                      {%- else -%}
+                        color: rgba({{colors.red}}, 1);
+                        background-color: rgba({{colors.red}}, 0.2);
+                      {%- endif %}
+                      border-radius: 50%;
+                    }
+              - type: custom:bar-card
+                entities:
+                  - entity: sensor.weather_station_signal_strength
+                    icon: mdi:wifi
+                    positions:
+                      icon: outside
+                      indicator: 'on'
+                      minmax: 'on'
+                      name: 'on'
+                      value: 'on'
+                    min: -55
+                    max: -75
+                    height: 10
+                severity:
+                  - color: rgb(76,175,80)
+                    from: 2.59
+                    to: 2.76
+                  - color: rgb(255,152,0)
+                    from: 2.5
+                    to: 2.59
+                  - color: rgb(244,67,54)
+                    from: 2.3
+                    to: 2.5
+                card_mod:
+                  style: >
+                    {% set entity = { 
+                      "state": states('sensor.weather_station_signal_strength') | float(9999999999),
+                      "name": "Tempest Signal",
+                      "unit": " dBm"
+                      }
+                    %} {% set severity = { 
+                      "green": 2.6,
+                      "orange": 2.5,
+                      "red": 2.3
+                      }
+                    %} {% set colors = { 
+                      "green": "76,175,80",
+                      "orange": "255,152,0",
+                      "red": "244,67,54"
+                      }
+                    %}
+
+                    ha-card .card-content {
+                      padding: 12px!important;
+                      cursor: pointer;
+                    }
+
+                    ha-card {
+                      transition-duration: 0.05s;
+                    }
+
+                    ha-card:hover {
+                      {% if entity.state == 9999999999 %}
+                        background-color: rgba(200,200,200, 0.02);
+                      {% elif entity.state < severity.orange %}
+                        background-color: rgba({{colors.green}}, 0.02);
+                      {% elif entity.state < severity.red %}
+                        background-color: rgba({{colors.orange}}, 0.02);
+                      {%- else -%}
+                        background-color: rgba({{colors.red}}, 0.02);
+                      {%- endif %}
+                    }
+
+                    bar-card-background {
+                      margin-left: 13px !important;
+                    }
+
+                    bar-card-backgroundbar, bar-card-currentbar,
+                    bar-card-contentbar,  bar-card-targetbar {
+                      border-radius: 8px;
+                    }
+
+                    bar-card-currentbar, bar-card-backgroundbar,
+                    bar-card-contentbar, bar-card-targetbar,
+                    bar-card-animationbar {
+                      {% if entity.state == 9999999999 %}
+                        left: 1.5em !important;
+                        width: calc(100% - 1.5em);
+                      {% else %}
+                        {% set state_width = 1 + (entity.state|string|count + entity.unit|count) * 0.4 %}
+                        left: {{state_width}}em !important;
+                        width: calc(100% - {{state_width}}em);
+                      {%- endif %}
+                    } 
+
+                    bar-card-markerbar {
+                      display: none;
+                    } 
+
+                    bar-card-background::before {
+                      content: "{{ entity.name }}";
+                      display: flex;
+                      font-family: Roboto, sans-serif;
+                      font-size: 14px;
+                      font-weight: 500;
+                      height: 20px;
+                      letter-spacing: 0.1px;
+                      line-height: 20px;
+                      margin-bottom: 6px;
+                    }
+
+                    bar-card-background::after {
+                      {% if entity.state == 9999999999 %}
+                        content: "N/A";
+                      {%- else %}
+                        content: "{{ entity.state }}{{ entity.unit }}";
+                      {%- endif %}
+                      font-family: Roboto, Noto, sans-serif;
+                      font-size: 12px;
+                      font-weight: 400;
+                      height: 16px;
+                      letter-spacing: 0.4px;
+                      line-height: 16px;
+                      display: inline-block;
+                      position: absolute;
+                      margin-top: -4px;
+                      width: fit-content;
+                    }
+
+                    bar-card-iconbar {
+                      {% if entity.state == 9999999999 %}
+                        color: rgba(200,200,200, 1);
+                        background-color: rgba(200,200,200, 0.2);
+                      {% elif entity.state < severity.orange %}
+                        color: rgba({{colors.green}}, 1);
+                        background-color: rgba({{colors.green}}, 0.2);
+                      {% elif entity.state < severity.red %}
+                        color: rgba({{colors.orange}}, 1);
+                        background-color: rgba({{colors.orange}}, 0.2);
+                      {%- else -%}
+                        color: rgba({{colors.red}}, 1);
+                        background-color: rgba({{colors.red}}, 0.2);
+                      {%- endif %}
+                      border-radius: 50%;
+                    }
+                      font-family: Roboto, Noto, sans-serif;
+                      font-size: 12px;
+                      font-weight: 400;
+                      height: 16px;
+                      letter-spacing: 0.4px;
+                      line-height: 16px;
+                      display: inline-block;
+                      position: absolute;
+                      margin-top: -4px;
+                      width: fit-content;
+                    }
+
+                    bar-card-iconbar {
+                      {% if entity.state == 9999999999 %}
+                        color: rgba(200,200,200, 1);
+                        background-color: rgba(200,200,200, 0.2);
+                      {% elif entity.state < severity.orange %}
+                        color: rgba({{colors.green}}, 1);
+                        background-color: rgba({{colors.green}}, 0.2);
+                      {% elif entity.state < severity.red %}
+                        color: rgba({{colors.orange}}, 1);
+                        background-color: rgba({{colors.orange}}, 0.2);
+                      {%- else -%}
+                        color: rgba({{colors.red}}, 1);
+                        background-color: rgba({{colors.red}}, 0.2);
+                      {%- endif %}
+                      border-radius: 50%;
+                    }
+            columns: 2
+          - type: custom:mod-card
+            card:
+              type: iframe
+              url: https://dagammla.gitlab.io/keep-silk-open/iframe.html
+              aspect_ratio: 10%
+            style:
+              .: |
+                iframe {
+                  height: 50px !important;
+                  width: 50px !important;
+                }
+        column_span: 2
+      - type: grid
+        cards:
+          - type: heading
+            icon: mdi:air-filter
+            heading: Air Quality Indoors
+            heading_style: title
+            badges:
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.kitchen_air_quality_sensor_carbon_dioxide
+                color: green
+                name: CO2
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.kitchen_air_quality_sensor_pm2_5
+                color: yellow
+                name: PM 2.5
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.kitchen_air_quality_sensor_voc_index
+                color: blue
+                name: VOC Index
+              - type: entity
+                show_state: true
+                show_icon: true
+                entity: sensor.kitchen_air_quality_sensor_nox_index
+                color: purple
+                name: NOx
+          - type: horizontal-stack
+            cards:
+              - type: vertical-stack
+                cards:
+                  - type: custom:clock-weather-card
+                    entity: weather.living_room
+                    sun_entity: sun.sun
+                    temperature_sensor: sensor.outdoor_temp
+                    humidity_sensor: sensor.outdoor_humidity
+                    weather_icon_type: line
+                    animated_icon: true
+                    forecast_rows: 2
+                    locale: en-GB
+                    time_pattern: HH:mm
+                    hide_today_section: false
+                    hide_forecast_section: false
+                    show_humidity: false
+                    hide_clock: false
+                    hide_date: false
+                    use_browser_time: false
+                    show_decimal: false
+                    apparent_sensor: sensor.real_feel_temperature
+                    aqi_sensor: sensor.home_air_quality_today
+                  - type: horizontal-stack
+                    cards:
+                      - type: custom:windrose-card
+                        title: Wind
+                        data_period:
+                          hours_to_show: 12
+                        wind_direction_entity:
+                          entity: sensor.weather_station_wind_direction
+                        windspeed_entities:
+                          - entity: sensor.weather_station_wind_speed
+                            name: Speed
+                        current_direction:
+                          show_arrow: true
+                        card_mod:
+                          style: |
+                            ha-card {
+                              transform: scale(1); /* Shrink size */
+                              max-width: 300px; /* Limit width */
+                              margin: 0 auto; /* Center the card */
+                            }
+                      - type: vertical-stack
+                        cards:
+                          - type: custom:mushroom-entity-card
+                            entity: sensor.weather_wind_dir
+                            name: Wind Direction
+                            icon: mdi:compass
+                            icon_color: green
+                            layout: vertical
+                            fill_container: true
+                            card_mod:
+                              style: |
+                                ha-card {
+                                  --mush-icon-color: green;
+                                  --mush-title-spacing: 0;
+                                }
+                          - type: custom:mushroom-entity-card
+                            entity: sensor.weather_station_wind_speed
+                            name: Wind Speed
+                            icon: mdi:weather-windy
+                            icon_color: light-blue
+                            fill_container: true
+                            layout: vertical
+                            card_mod:
+                              style: |
+                                ha-card {
+                                  --mush-icon-color: blue;
+                                  --mush-title-spacing: 0;
+                                }
+                          - type: custom:mushroom-entity-card
+                            entity: sensor.weather_station_wind_gust
+                            fill_container: true
+                            layout: vertical
+                            icon_color: deep-purple
+                            name: Wind Gust
+                    grid_options:
+                      columns: full
+                      rows: 5
+                  - square: false
+                    type: grid
+                    cards:
+                      - square: false
+                        type: grid
+                        columns: 2
+                        cards:
+                          - type: custom:mushroom-entity-card
+                            entity: sensor.weather_station_wet_bulb_temperature
+                            name: Wet Bulb Temp
+                            icon: mdi:thermometer
+                            icon_color: deep-orange
+                            fill_container: false
+                            card_mod:
+                              style: |
+                                ha-card {
+                                  --mush-icon-color: orange;
+                                  --mush-title-spacing: 0;
+                                }
+                          - type: custom:mushroom-entity-card
+                            entity: sensor.weather_station_dew_point
+                            name: Dew Point
+                            icon_color: yellow
+                      - color_thresholds:
+                          - color: black
+                            value: -32
+                          - color: white
+                            value: 0
+                          - color: blue
+                            value: 32
+                          - color: green
+                            value: 45
+                          - color: yellow
+                            value: 65
+                          - color: orange
+                            value: 70
+                          - color: red
+                            value: 85
+                        color_thresholds_transition: hard
+                        entities:
+                          - entity: sensor.weather_station_feels_like
+                            name: Feels Like
+                        group: false
+                        hours_to_show: 24
+                        line_width: 3
+                        points_per_hour: 2
+                        show:
+                          graph: bar
+                          extrema: true
+                          fill: fade
+                          icon: true
+                          labels: false
+                          name: true
+                          state: true
+                        type: custom:mini-graph-card
+                        decimals: 0
+                    columns: 1
+              - type: vertical-stack
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.home_condition_today
+                    layout: vertical
+                    fill_container: true
+                    name: Overview
+                    icon_color: light-grey
+                  - type: conditional
+                    conditions:
+                      - condition: state
+                        entity: weather.home
+                        state_not: unavailable
+                    card:
+                      show_current: false
+                      show_forecast: true
+                      type: weather-forecast
+                      entity: weather.forecast_home_3
+                      forecast_type: hourly
+                  - type: custom:mini-graph-card
+                    name: Outdoor Conditions (24 Hours)
+                    entities:
+                      - entity: sensor.weather_station_temperature
+                        name: Temperature
+                        color: blue
+                        show_state: true
+                        show_graph: true
+                      - entity: sensor.weather_station_humidity
+                        name: Humidity
+                        color: purple
+                        show_state: true
+                        show_graph: true
+                        y_axis: secondary
+                    align_state: center
+                    hours_to_show: 24
+                    points_per_hour: 1
+                    line_width: 4
+                    show:
+                      name: true
+                      icon: true
+                      state: true
+                      graph: true
+                      labels: true
+                      labels_secondary: true
+                      animate: true
+                    decimals: 0
+                  - type: custom:uv-index-card
+                    entity: sensor.weather_station_uv_index
+                    language: en
+                  - type: picture-elements
+                    image: /local/blank1.png
+                    elements:
+                      - type: custom:apexcharts-card
+                        chart_type: radialBar
+                        header:
+                          show: true
+                        update_interval: 1s
+                        series:
+                          - entity: sensor.weather_station_air_pressure
+                            name: Barometric Pressure
+                            min: 28.4
+                            max: 29.1
+                        apex_config:
+                          plotOptions:
+                            radialBar:
+                              startAngle: -120
+                              endAngle: 120
+                              dataLabels:
+                                name:
+                                  show: true
+                                  fontSize: 16px
+                                  color: white
+                                value:
+                                  show: false
+                              track:
+                                background: black
+                                strokeWidth: 80%
+                              hollow:
+                                size: 50%
+                        style:
+                          top: 50%
+                          left: 50%
+                          width: 110%
+                      - type: image
+                        image: /local/weather/sunny.png
+                        style:
+                          top: 85%
+                          left: 85%
+                          width: 15%
+                      - type: image
+                        image: /local/weather/overcast.png
+                        style:
+                          top: 30%
+                          left: 80%
+                          width: 15%
+                      - type: image
+                        image: /local/weather/cloudy.png
+                        style:
+                          top: 7%
+                          left: 50%
+                          width: 15%
+                      - type: image
+                        image: /local/weather/rain.png
+                        style:
+                          top: 30%
+                          left: 20%
+                          width: 15%
+                      - type: image
+                        image: /local/weather/storm.png
+                        style:
+                          top: 85%
+                          left: 15%
+                          width: 15%
+                      - type: custom:mini-graph-card
+                        entities:
+                          - sensor.weather_station_air_pressure
+                        show:
+                          icon: false
+                          name: false
+                          state: false
+                        style:
+                          top: 180%
+                          left: 50%
+                          width: 100%
+                          background: transparent
+                        card_mod:
+                          class: hki
+                          style: |
+                            ha-card {
+                              box-shadow: none;
+                              background: transparent;
+                            }
+            grid_options:
+              columns: 24
+              rows: auto
+        column_span: 2
+    max_columns: 6
+    theme: iOS Dark Mode
+    background:
+      opacity: 44
+      alignment: center
+      size: cover
+      repeat: repeat
+      attachment: fixed
+    dense_section_placement: true
