@@ -1,0 +1,112 @@
+max_columns: 4
+  - title: Laundry
+    path: '13'
+    type: sections
+    sections:
+      - type: grid
+        cards:
+          - type: picture-elements
+            image: local/Laundry/Washer-tall.png
+            elements:
+              - type: state-label
+                entity: sensor.tv364819n_laundry_time_remaining
+                style:
+                  top: 4%
+                  left: 84%
+                  transform: translate(-50%, -50%)
+                  font-size: 3em
+                  color: white
+                  background-color: black
+                  padding: 9px
+                  border-radius: 40px
+              - type: state-label
+                entity: sensor.tv364819n_laundry_washer_smart_dispense_loads_left
+                style:
+                  top: 4%
+                  left: 18%
+                  transform: translate(-50%, -50%)
+                  font-size: 2em
+                  color: white
+                  background-color: black
+                  padding: 7px
+                  border-radius: 10px
+              - type: state-label
+                entity: sensor.tv364819n_laundry_cycle
+                style:
+                  top: 85%
+                  left: 50%
+                  transform: translate(-50%, -50%)
+                  font-size: 4em
+                  color: white
+                  background-color: black
+                  padding: 10px
+                  border-radius: 10px
+              - type: state-label
+                entity: sensor.tv364819n_laundry_washer_washtemp_level
+                style:
+                  top: 93%
+                  left: 50%
+                  transform: translate(-50%, -50%)
+                  font-size: 3em
+                  color: white
+                  background-color: black
+                  padding: 8px
+                  border-radius: 10px
+          - type: picture-elements
+            image: local/Laundry/Dryer-Tall.png
+            elements:
+              - type: state-label
+                entity: sensor.fz925532g_laundry_time_remaining
+                style:
+                  top: 4%
+                  left: 83%
+                  transform: translate(-50%, -50%)
+                  font-size: 3em
+                  color: white
+                  background-color: black
+                  padding: 9px
+                  border-radius: 40px
+              - type: state-label
+                entity: binary_sensor.fz925532g_laundry_dryer_washerlink_status
+                style:
+                  top: 4%
+                  left: 16%
+                  transform: translate(-50%, -50%)
+                  font-size: 3em
+                  color: white
+                  background-color: black
+                  padding: 9px
+                  border-radius: 10px
+              - type: state-label
+                entity: sensor.fz925532g_laundry_cycle
+                style:
+                  top: 82%
+                  left: 50%
+                  transform: translate(-50%, -50%)
+                  font-size: 5em
+                  color: white
+                  background-color: black
+                  padding: 19px
+                  border-radius: 10px
+              - type: state-label
+                entity: sensor.fz925532g_laundry_dryer_drynessnew_level
+                style:
+                  top: 90%
+                  left: 50%
+                  transform: translate(-50%, -50%)
+                  font-size: 3em
+                  color: white
+                  background-color: black
+                  padding: 9px
+                  border-radius: 10px
+          - type: custom:mod-card
+            card:
+              type: iframe
+              url: https://dagammla.gitlab.io/keep-silk-open/iframe.html
+              aspect_ratio: 10%
+            style:
+              .: |
+                iframe {
+                  height: 50px !important;
+                  width: 50px !important;
+                }
