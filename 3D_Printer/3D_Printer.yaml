@@ -1,0 +1,144 @@
+views:
+  - title: Home
+    sections:
+      - type: grid
+        cards:
+          - type: custom:ha-bambulab-ams-card
+            entity: ''
+            header: ''
+            subtitle: ''
+            style: graphic
+            ams: bbc8c314ba192ab1ca02adf66a17b626
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: sensor.x1_carbon_active_tray
+                fill_container: true
+                layout: vertical
+                icon_color: teal
+              - type: custom:mushroom-entity-card
+                entity: sensor.x1_carbon_total_layer_count
+                fill_container: true
+                layout: vertical
+                icon_color: purple
+            columns: 2
+          - type: custom:ha-bambulab-print_status-card
+            printer: fab0d3807968081fae9ed46afcb797bb
+          - type: entity
+            entity: sensor.x1_carbon_end_time
+            state_color: true
+            grid_options:
+              columns: 12
+              rows: 2
+      - type: grid
+        cards:
+          - show_state: true
+            show_name: true
+            camera_view: live
+            type: picture-entity
+            entity: camera.x1_carbon_camera
+            camera_image: camera.x1_carbon_camera
+            name: Bambu X1C
+          - square: true
+            type: grid
+            cards:
+              - square: false
+                type: grid
+                cards:
+                  - type: gauge
+                    entity: sensor.x1_carbon_bed_temperature
+                    min: 70
+                    max: 170
+                    needle: true
+                    severity:
+                      green: 0
+                      yellow: 110
+                      red: 128
+                  - type: gauge
+                    entity: sensor.x1_carbon_nozzle_temperature
+                    max: 450
+                    min: 75
+                    needle: true
+                    severity:
+                      green: 200
+                      yellow: 350
+                      red: 400
+                  - type: gauge
+                    entity: sensor.3d_printer_humidity
+                    min: 0
+                    max: 100
+                    needle: true
+                    severity:
+                      green: 0
+                      yellow: 55
+                      red: 85
+                columns: 1
+              - square: false
+                type: grid
+                cards:
+                  - type: custom:mushroom-entity-card
+                    entity: number.x1_carbon_bed_target_temperature
+                    fill_container: true
+                    layout: vertical
+                    icon_color: amber
+                    name: Bed Target Temp
+                  - type: custom:mushroom-entity-card
+                    entity: number.x1_carbon_nozzle_target_temperature
+                    fill_container: true
+                    layout: vertical
+                    icon_color: red
+                    name: Nozzle Target Temp
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.x1_carbon_chamber_temperature
+                    fill_container: true
+                    layout: vertical
+                    icon_color: purple
+                    name: Top Temp
+                  - type: custom:mushroom-entity-card
+                    entity: sensor.3d_printer_temperature
+                    name: Bottom Temp
+                    fill_container: false
+                    layout: vertical
+                  - show_name: true
+                    show_icon: true
+                    type: button
+                    tap_action:
+                      action: toggle
+                    entity: button.x1_carbon_force_refresh_data
+                    show_state: false
+                    icon_height: 30px
+                columns: 1
+            columns: 2
+          - square: false
+            type: grid
+            cards:
+              - type: custom:mushroom-fan-card
+                entity: fan.x1_carbon_chamber_fan
+                show_oscillate_control: false
+                show_percentage_control: true
+                fill_container: false
+                icon_animation: true
+                collapsible_controls: true
+                name: Chamber
+              - type: custom:mushroom-fan-card
+                entity: fan.x1_carbon_cooling_fan
+                fill_container: false
+                icon_animation: true
+                show_oscillate_control: false
+                show_percentage_control: true
+                collapsible_controls: true
+                name: Cooling
+              - type: custom:mushroom-fan-card
+                entity: fan.x1_carbon_aux_fan
+                show_oscillate_control: false
+                show_percentage_control: true
+                fill_container: false
+                icon_animation: true
+                collapsible_controls: true
+                name: Aux
+            columns: 3
+          - type: custom:ha-bambulab-print_control-card
+            printer: fab0d3807968081fae9ed46afcb797bb
+      - type: grid
+        cards: []
